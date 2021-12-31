@@ -16,6 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/panther')]
 class PantherController extends AbstractController
 {
+    private function in_arrayi($needle, $haystack)
+    {
+        return in_array(strtolower($needle), array_map('strtolower', $haystack));
+    }
+
     #[Route('/monde', name: 'panther_monde')]
     public function monde(PlatformRepository $platformRepository, ArticleRepository $articleRepository, EntityManagerInterface $em): Response
     {
@@ -25,7 +30,7 @@ class PantherController extends AbstractController
         //? Initiate article array and positives array. Also a basic filter for words that needs to be better.
         $articles = [];
         $positives = [];
-        $filters = ['paix', 'innovation', 'amélioration', 'cadeau', 'cœur', 'création', 'culinaire', 'cuisine'];
+        $filters = ['paix', 'innovation', 'amélioration', 'cadeau', 'cœur', 'création', 'culinaire', 'cuisine', 'art', 'artistique', 'investissements', 'recette', 'apprentissage', 'beau', 'célèbre', 'célébrer'];
 
         // dd($articles);
 
@@ -78,7 +83,7 @@ class PantherController extends AbstractController
         $articlesInDb = $articleRepository->findAll();
 
         foreach ($positives as $uniquePositive) {
-            if (!in_array($uniquePositive, $articlesInDb)) {
+            if (!$this->in_arrayi($uniquePositive, $articlesInDb)) {
                 $em->persist($uniquePositive);
             }
         }
